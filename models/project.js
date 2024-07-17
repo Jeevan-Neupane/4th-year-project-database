@@ -2,13 +2,25 @@
 const mongoose = require('mongoose');
 
 var projectSchema = new mongoose.Schema({
-    title: String,
-    year: String,
+    title: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    year: {
+        type: String,
+        required: true,
+        trim: true
+    },
     link: String,
     description: String,
-    image:String,
+    image: String,
     reviewStatus: Boolean,
-    authors:String,
+    authors: {
+        type: String,
+        required: true,
+        trim: true
+    },
     author: [{
 
         id: {
@@ -16,11 +28,11 @@ var projectSchema = new mongoose.Schema({
             ref: "User"
         },
         username: [String],
-        user : [String]
+        user: [String]
     }],
     abstract: String,
     supervisor: String,
-    
+
 })
 
 module.exports = mongoose.model("Project", projectSchema)

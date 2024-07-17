@@ -86,7 +86,7 @@ app.use("/admin", adminRoutes);
 //the only way to add new accounts for now is from admin apnel which can be accessed only if logged in with username 'admin'
 //making sure an admin user exits (delete from database manually if pw incorrect or need to update)
 var adminPW = "admin123";
-var newUser = new User({ username: "admin", user:"admin" });
+var newUser = new User({ username: "admin", user:"admin",email:"admin@gmail.com" });
 User.register(newUser, adminPW, function (err, user) {
   if (err) {
     console.log(err);

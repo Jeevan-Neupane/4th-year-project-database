@@ -24,17 +24,40 @@
     <% }else{%>
     <li>Signed In as: <%= currentUser.user%></li>
     <li></li>
-    <li><a href="/logout" role="button">Log out</a></li>
+    <li>
+      <a
+        href="/logout"
+        role="button"
+        >Log out</a
+      >
+    </li>
     <%}%>
   </ul>
 </nav>
 
 <div class="container">
   <%if(error && error.length > 0){%>
-  <div class="alert alert-danger" role="alert"><%=error %><span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> </div>
-  <% } %>
-  <% if(success && success.length > 0){ %>
-  <div class="alert alert-success" role="alert"><%=success%><span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span></div>
+  <div
+    class="alert alert-danger"
+    role="alert"
+  >
+    <%=error %><span
+      class="closebtn"
+      onclick="this.parentElement.style.display='none';"
+      >&times;</span
+    >
+  </div>
+  <% } %> <% if(success && success.length > 0){ %>
+  <div
+    class="alert alert-success"
+    role="alert"
+  >
+    <%=success%><span
+      class="closebtn"
+      onclick="this.parentElement.style.display='none';"
+      >&times;</span
+    >
+  </div>
   <% } %>
 </div>
 
@@ -50,8 +73,11 @@
       ></a>
       Log In
     </header>
-    
-    <form action="/login" method="post">
+
+    <form
+      action="/login"
+      method="post"
+    >
       <div class="formcontainer">
         <input
           type="text"
@@ -60,7 +86,7 @@
           required
         />
         <input
-          type="password"
+          type="text"
           name="password"
           placeholder="Password"
           required
@@ -74,7 +100,13 @@
         >
       </div>
       <hr />
+      <div>
+        <p>Demo Account</p>
+        <p>Username: admin</p>
+        <p>Password: admin123</p>
+      </div>
     </form>
+
     <div class="grid">
       <div></div>
       <a onclick="registerModal()">Change password?</a>
@@ -82,7 +114,6 @@
     </div>
   </article>
 </dialog>
-
 
 <!-- Change Password  Modal -->
 <dialog id="about-rmodal">
@@ -94,10 +125,13 @@
         class="close"
         onclick="closeRModal()"
       ></a>
-     Change password
+      Change password
     </header>
-    
-    <form action="/changepassword?_method=PUT" method="post">
+
+    <form
+      action="/changepassword?_method=PUT"
+      method="post"
+    >
       <div class="formcontainer">
         <input
           type="text"
@@ -132,7 +166,7 @@
 
 <script>
   let modal = document.querySelector("#about-modal");
-  let rmodal = document.querySelector("#about-rmodal")
+  let rmodal = document.querySelector("#about-rmodal");
   let isModalOpen = false;
   let isRModalOpen = false;
   document.addEventListener("keydown", (e) => {
@@ -163,11 +197,10 @@
     isRModalOpen = false;
     document.querySelector("html").classList.remove("modal-is-open");
     document.querySelector("html").classList.add("modal-is-closing");
-    
   }
   function registerModal() {
     console.log(`opening`);
-    isRModalOpen= true;
+    isRModalOpen = true;
     //closeAboutModal();
     document.querySelector("html").classList.add("modal-is-open");
     rmodal.setAttribute("open", "true");
@@ -187,16 +220,16 @@
     background-color: #ee5348; /* Red */
   }
   .alert-success {
-    background-color:#2fb986; /* Red */
+    background-color: #2fb986; /* Red */
   }
   .closebtn {
-  margin-left: 15px;
-  color: white;
-  font-weight: bold;
-  float: right;
-  font-size: 22px;
-  line-height: 20px;
-  cursor: pointer;
-  transition: 0.3s;
-}
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
 </style>

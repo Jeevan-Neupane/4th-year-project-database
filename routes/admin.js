@@ -9,6 +9,36 @@ const fs = require('fs');
 const Project = require('../models/project');
 const middleware = require('../middleware/index1');
 const { isAdmin } = require("../middleware/index1");
+const nodemailer = require('nodemailer');
+
+
+async function sendEmail(to, subject, text) {
+    // Create a transporter
+    let transporter = nodemailer.createTransport({
+        service: 'gmail', // Use your email service
+        auth: {
+            user: 'jeevan.neupane003@gmail.com', // Your email address
+            pass: 'tuyp rllp jcgi noyv'   // Your email password
+        }
+    });
+
+    // Email options
+    let mailOptions = {
+        from: 'jeevan.neupane003@gmail.com',
+        to: to,
+        subject: subject,
+        text: text
+    };
+
+    // Send email
+    try {
+        let info = await transporter.sendMail(mailOptions);
+        console.log('Email sent: ' + info.response);
+    } catch (error) {
+        console.error('Error sending email: ' + error);
+    }
+}
+
 
 
 
@@ -24,7 +54,7 @@ const fileStorageEngine = multer.diskStorage({
 
 const upload = multer({ storage: fileStorageEngine });
 
-router.get('/',isAdmin, function (req, res) {
+router.get('/', isAdmin, function (req, res) {
     // res.send("hello")
     Project.find({}, function (err, allProjects) {
         if (err) {
@@ -37,7 +67,7 @@ router.get('/',isAdmin, function (req, res) {
 
 });
 
-router.post('/upload-csv',isAdmin, upload.single('file'), function (req, res) {
+router.post('/upload-csv', isAdmin, upload.single('file'), function (req, res) {
 
     var newCount = 0;
     var errorCount = 0;
@@ -51,15 +81,16 @@ router.post('/upload-csv',isAdmin, upload.single('file'), function (req, res) {
             console.log(fileRows) //contains array of arrays. Each inner array represents row of the csv file, with each element of it a column
             pending = fileRows.length; //check no of rows being processed
             fileRows.forEach(row => {
-                if (row[0].toLowerCase() == "username") {
-                    pending = pending -1;
+                if (row[0]?.toLowerCase() == "username") {
+                    pending = pending - 1;
                     return;
                 } else {
                     var UserName = row[0];
                     var PassWord = row[1];
                     var aUser = row[2];
+                    var email = row[3];
                     console.log(UserName, " ", PassWord, " ", aUser)
-                    var newUser = new User({ username: UserName,user:aUser });
+                    var newUser = new User({ username: UserName, user: aUser, email: email });
                     User.register(newUser, PassWord, function (err, user) {
                         if (err) {
                             errorCount++;
@@ -68,6 +99,7 @@ router.post('/upload-csv',isAdmin, upload.single('file'), function (req, res) {
                         } else {
                             newCount = newCount + 1;
                             console.log("\n new user created:", UserName)
+                            sendEmail(email, "Account Creation", "Your account has been created. Your username is " + UserName + " and password is " + PassWord + ".This email is sent by the students of 078 batch to check the functionality of the system as the part of software engineering project. Please ignore this email for now. Thank you.")
                         }
                         if (pending == 1) { //check if last row is being handled, if yes render result
                             if (newCount > 0)
@@ -81,18 +113,18 @@ router.post('/upload-csv',isAdmin, upload.single('file'), function (req, res) {
                     //process "fileRows" and respond
                 }
             })
-                    //the whole pending thing was done because User.register works asynchronously and allows other code to run before it finishes running, (multi threading)
+            //the whole pending thing was done because User.register works asynchronously and allows other code to run before it finishes running, (multi threading)
             // fs.unlinkSync(req.file.path); // remove file after finish process
         })
 });
 
 
-router.post("/register",isAdmin, function (req, res) {
-    var newUser = new User({ username: req.body.username, user: req.body.user});
+router.post("/register", isAdmin, function (req, res) {
+    var newUser = new User({ username: req.body.username, user: req.body.user });
     User.register(newUser, req.body.password, function (err, user) {
         if (err) {
             console.log(err);
-            res.render("register", { error: err.message }); x
+            res.render("register", { error: err.message });
         } else {
             passport.authenticate("local")(req, res, function () {
                 req.flash("success", "Welcome " + user.username + "!!!");
@@ -102,18 +134,18 @@ router.post("/register",isAdmin, function (req, res) {
     });
 });
 
-router.put("/:id",isAdmin, function (req, res) {
+router.put("/:id", isAdmin, function (req, res) {
     Project.findById(req.params.id, function (err, project) {
-      project.reviewStatus = !project.reviewStatus;
-      project.save(function (err, updatedproject) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.redirect("/admin")
-        }
-      })
+        project.reviewStatus = !project.reviewStatus;
+        project.save(function (err, updatedproject) {
+            if (err) {
+                console.log(err);
+            } else {
+                res.redirect("/admin")
+            }
+        })
     })
-  });
+});
 
 
 module.exports = router;
