@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'nonce-<%= nonce %>' https://cdnjs.cloudflare.com https://kit.fontawesome.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:;"
+    />
+
     <link
       href="https://fonts.googleapis.com/css?family=Inter&display=swap"
       rel="stylesheet"
@@ -27,121 +32,97 @@
     <% console.log(error[0]) %> <% } %> <%if(success && success.length > 0){ %>
     <% console.log(success[0])%> <% } %>
     
-    
-
-    <form class = "container"action="/admin/upload-csv" method="POST"  enctype="multipart/form-data">
+    <form class="container" action="/admin/upload-csv" method="POST" enctype="multipart/form-data">
       <h4 class="heading">To create student accounts, Upload a CSV File with username in 1st Column and password in 2nd column and Name of student in third column.</h4>
       <div class="grid">
-      <input type="file" name="file" placeholder="CSV - File" accept=".csv" required>
-      <input type="submit" value='Upload'>
+        <input type="file" name="file" placeholder="CSV - File" accept=".csv" required>
+        <input type="submit" value="Upload">
       </div>
-      <!-- <button class="formbutton"> Submit</button> -->
     </form>
 
-    <div class=" container">
-    <div class="grid">
-      <div></div>
-      
-      <button  onclick="forgotModal()">Change User Password</button>
-      
-    </div>  
+    <div class="container">
+      <div class="grid">
+        <div></div>
+        <button onclick="forgotModal()">Change User Password</button>
+      </div>
     </div>
-      
 
     <div class="projectlist container">
       <h1>Project List</h1>
 
-      <% if(projects?.length === 0){%>
+      <% if(projects?.length === 0){ %>
         <article aria-busy="true"></article>
-      <% }else{ %>
+      <% } else { %>
       <div class="grid">
         <div>
           <h4>Pending Projects</h4>
-        <% projects.forEach(function(project){%>
-      
-          <%console.log(project.author[0].id)%>
-         <% if(!project.reviewStatus){ %>
-                <article class="project">
-                    <header class="projectName">
-                      <strong><%= project.title %></strong>
-                    </header>
-                    <div class="description">
-                      Abstract: <%= project.abstract ? `${project.abstract.slice(0,30)}...`:
-                      'No abstract available!' %>
-                    </div>
-                    <div>
-                      <strong>Authors: </strong><% for(var i =0; i< project.author[0].user.length;i++){ %>
-                       <li><%=project.author[0].user[i]%></li> 
-                    <% } %> 
-                    </div>
-                    <div class="supervisor">Supervisor: <%=project.supervisor%></div>
-                    <div class="status">
-                      <% if(project.reviewStatus){%>
-                      <h4>Approved</h4>
-                      <% }else{ %>
-                      <h4>Pending</h4>
-                      <%}%>
-                    </div>
-                    <br />
-                    <div class="grid">
-                      <!-- Extra grids for spacing -->
-                    
-                      <div></div>
-                      <form action="/admin/<%=project._id%>?_method=PUT" method="post">
-                        <Button type="submit">Verify</Button>
-                      </form>
-                      <div></div>
-                      
-                    </div>
-                  </article>
-                <% } %>
-            
+          <% projects.forEach(function(project) { %>
+          <% if(!project.reviewStatus) { %>
+          <article class="project">
+            <header class="projectName">
+              <strong><%= project.title %></strong>
+            </header>
+            <div class="description">
+              Abstract: <%= project.abstract ? `${project.abstract.slice(0, 30)}...` : 'No abstract available!' %>
+            </div>
+            <div>
+              <strong>Authors: </strong>
+              <% for(var i = 0; i < project.author[0].user.length; i++) { %>
+              <li><%= project.author[0].user[i] %></li>
+              <% } %>
+            </div>
+            <div class="supervisor">Supervisor: <%= project.supervisor %></div>
+            <div class="status">
+              <% if(project.reviewStatus) { %>
+              <h4>Approved</h4>
+              <% } else { %>
+              <h4>Pending</h4>
+              <% } %>
+            </div>
+            <br />
+            <div class="grid">
+              <div></div>
+              <form action="/admin/<%= project._id %>?_method=PUT" method="post">
+                <button type="submit">Verify</button>
+              </form>
+              <div></div>
+            </div>
+          </article>
+          <% } %>
           <% }) %>
         </div>
         <div>
           <h4>Approved Projects</h4>
-        <% projects.forEach(function(project){%>
-       
-          <% if(project.reviewStatus){ %>
-                    <article class="project">
-                        <header class="projectName">
-                          <strong><%= project.title %></strong>
-                        </header>
-                        <div class="description">
-                          Abstract: <%= project.abstract ? `${project.abstract.slice(0,30)}...`:
-                          'No abstract available!' %>
-                        </div>
-                        <div>
-                          <strong>Authors: </strong><% for(var i =0; i< project.author[0].user.length;i++){ %>
-                           <li><%=project.author[0].user[i]%></li> 
-                        <% } %> 
-                        </div>
-                        <div class="supervisor">Supervisor: <%=project.supervisor%></div>
-                        <div class="status">
-                          <% if(project.reviewStatus){%>
-                          <h4>Approved</h4>
-                          <% }else{ %>
-                          <h4>Pending</h4>
-                          <%}%>
-                        </div>
-                        <br />
-                        <!-- <div class="grid">
-                          <!-- Extra grids for spacing -->
-                      
-                          <!-- <div></div>
-                          <!-- <a href="/projects/<%= project._id%>" role="button">Verify</a> -->
-                          <!-- <div></div>
-  
-                        </div> --> 
-                      </article>
-                      <% } %>
-                      <% }) %>
-                    </div>
-
-
-    </div>
-    <% } %>
-
+          <% projects.forEach(function(project) { %>
+          <% if(project.reviewStatus) { %>
+          <article class="project">
+            <header class="projectName">
+              <strong><%= project.title %></strong>
+            </header>
+            <div class="description">
+              Abstract: <%= project.abstract ? `${project.abstract.slice(0, 30)}...` : 'No abstract available!' %>
+            </div>
+            <div>
+              <strong>Authors: </strong>
+              <% for(var i = 0; i < project.author[0].user.length; i++) { %>
+              <li><%= project.author[0].user[i] %></li>
+              <% } %>
+            </div>
+            <div class="supervisor">Supervisor: <%= project.supervisor %></div>
+            <div class="status">
+              <% if(project.reviewStatus) { %>
+              <h4>Approved</h4>
+              <% } else { %>
+              <h4>Pending</h4>
+              <% } %>
+            </div>
+            <br />
+          </article>
+          <% } %>
+          <% }) %>
+        </div>
+      </div>
+      <% } %>
 
     <!-- Change Password  Modal -->
 <dialog id="about-fmodal">
