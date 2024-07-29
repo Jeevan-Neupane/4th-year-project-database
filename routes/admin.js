@@ -12,6 +12,8 @@ const { isAdmin } = require("../middleware/index1");
 const nodemailer = require('nodemailer');
 
 
+
+
 async function sendEmail(to, subject, text) {
     // Create a transporter
     let transporter = nodemailer.createTransport({
@@ -38,6 +40,9 @@ async function sendEmail(to, subject, text) {
         console.error('Error sending email: ' + error);
     }
 }
+function generateNonce() {
+    return require('crypto').randomBytes(16).toString('base64');
+}
 
 
 
@@ -55,16 +60,18 @@ const fileStorageEngine = multer.diskStorage({
 const upload = multer({ storage: fileStorageEngine });
 
 router.get('/', isAdmin, function (req, res) {
-    // res.send("hello")
+    // Generate a nonce
+    const nonce = generateNonce();
+
     Project.find({}, function (err, allProjects) {
         if (err) {
             console.log(err);
+            res.status(500).send("An error occurred");
+        } else {
+            // Pass nonce and projects to the template
+            res.render('admin/admin', { projects: allProjects, nonce });
         }
-        else {
-            res.render('admin/admin', { projects: allProjects })
-        }
-    })
-
+    });
 });
 
 router.post('/upload-csv', isAdmin, upload.single('file'), function (req, res) {
