@@ -10,7 +10,7 @@ const Project = require('../models/project');
 const middleware = require('../middleware/index1');
 const { isAdmin } = require("../middleware/index1");
 const nodemailer = require('nodemailer');
-
+const path = require('path');
 
 
 
@@ -47,10 +47,17 @@ function generateNonce() {
 
 
 
+const csvDir = path.join(__dirname, 'csvfiles');
+
+// Ensure the directory exists
+if (!fs.existsSync(csvDir)) {
+    fs.mkdirSync(csvDir, { recursive: true });
+}
+
 const fileStorageEngine = multer.diskStorage({
     destination: (req, file, cb) => {
-        console.log("erore hereer")
-        cb(null, "./csvfiles"); //important this is a direct path fron our current file to storage location
+        console.log("Checking directory");
+        cb(null, csvDir); // Use the absolute path
     },
     filename: (req, file, cb) => {
         cb(null, "test.csv");
