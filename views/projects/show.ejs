@@ -3,6 +3,14 @@
 <html>
     <head>
         <link href="https://fonts.googleapis.com/css?family=Inter&display=swap" rel="stylesheet" />
+        <style>
+          .card{
+            color: black;
+            background-color:white;
+            overflow: hidden;
+            border-radius: 30px;
+          }
+        </style>
     </head>
 <body>
     
@@ -15,7 +23,7 @@
         </div> -->
         <%- include('../partials/header'); -%> 
           <div class="container">
-            <article class="project"> 
+            <article class="card"> 
             <header>
                 <div><h2><%= project.title %></h2></div>
                 <div class="grid">
@@ -30,9 +38,9 @@
                     <% } %>
                         <div class="status">
                           <% if(project.reviewStatus){%>
-                          <h4>Approved</h4>
+                          <h4 style="color:green">Approved</h4>
                           <% }else{ %>
-                          <h4>Pending</h4>
+                          <h4 style="color: yellow;">Pending</h4>
                           <%}%>
                         </div>
                     </div>
@@ -43,10 +51,10 @@
                <li><%=project.author[0].user[i]%></li> 
             <% } %> 
             </div>
-          </br>
+              </br>
             <div><strong>Supervisor: </strong><%= project.supervisor %></div>
             <div><strong>Year: </strong><%= project.year %></div>
-            <div><strong>Link:</strong> <a href=<%- project.link -%> ><%= project.link%></div></a>
+            <div ><strong>Link:</strong> <a href=<%- project.link -%> style="color:black;text-decoration-color: black;"><%= project.link%></div></a>
             <div><strong>Abstract: </strong>
                 <div>
                   <%= project.abstract %>
