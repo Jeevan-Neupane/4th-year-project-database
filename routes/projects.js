@@ -58,7 +58,7 @@ router.post('/', middleware.isLoggedIn, function (req, res) {
 
         Project.create(newProject, function (err, newProj) {
           if (err) {
-            // console.log("error", err);
+            console.log("error", err);
           }
           else {
             res.redirect('/projects')

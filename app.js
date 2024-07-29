@@ -35,7 +35,10 @@ var url =
   process.env.DATABASEURL;
 console.log(process.env.DATABASEURL);
 
-mongoose.connect(url, { useNewUrlParser: true });
+mongoose.connect('mongodb+srv://jeevanneupane003:jeevan@cluster0.jyaltiv.mongodb.net/', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));

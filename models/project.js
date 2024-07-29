@@ -18,8 +18,7 @@ var projectSchema = new mongoose.Schema({
     reviewStatus: Boolean,
     authors: {
         type: String,
-        required: true,
-        trim: true
+      
     },
     author: [{
 
