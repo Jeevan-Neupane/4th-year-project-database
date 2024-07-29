@@ -92,17 +92,22 @@ router.get('/myprojects/:id', middleware.isLoggedIn, (req, res) => {
 
 
 //search
-router.get('/search', (req, res) => {
+router.get('/search', async (req, res) => {
   try {
-    Project.find({ $or: [{ title: { '$regex': new RegExp(req.query.dsearch, "i") } }, { supervisor: { '$regex': new RegExp(req.query.dsearch, "i") } }] }, (err, data) => {
-      if (err) {
-        console.log(err);
-      } else {
-        res.render('projects/index', { projects: data });
-      }
-    })
+    const searchQuery = req.query.dsearch;
+    const projects = await Project.find({
+      $or: [
+        { title: { $regex: new RegExp(searchQuery, 'i') } },
+        { supervisor: { $regex: new RegExp(searchQuery, 'i') } },
+        { abstract: { $regex: new RegExp(searchQuery, 'i') } },
+        { year: { $regex: new RegExp(searchQuery, 'i') } },
+        { authors: { $regex: new RegExp(searchQuery, 'i') } }
+      ]
+    });
+    res.render('projects/index', { projects });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    res.status(500).send('Internal Server Error');
   }
 });
 
